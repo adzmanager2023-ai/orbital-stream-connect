@@ -16,7 +16,7 @@ export const Route = createFileRoute("/api/contact")({
             message,
           } = body;
 
-          // Basic validation
+          // Required fields
           if (!name || !email || !service) {
             return Response.json(
               {
@@ -27,6 +27,7 @@ export const Route = createFileRoute("/api/contact")({
             );
           }
 
+          // Get Resend API key from Wasmer Environment Variables
           const resendApiKey = process.env.RESEND_API_KEY;
 
           if (!resendApiKey) {
@@ -41,6 +42,7 @@ export const Route = createFileRoute("/api/contact")({
             );
           }
 
+          // Clean input
           const safeName = String(name).trim();
           const safeCompany = String(company || "").trim();
           const safeEmail = String(email).trim();
@@ -48,83 +50,107 @@ export const Route = createFileRoute("/api/contact")({
           const safeService = String(service).trim();
           const safeMessage = String(message || "").trim();
 
-          const emailHtml = `
-            <div style="font-family: Arial, Helvetica, sans-serif; background:#f4f7fb; padding:30px;">
-              <div style="max-width:700px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e5e7eb;">
+          // Basic email validation
+          const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-                <div style="background:#071a3d; padding:28px 30px;">
-                  <h1 style="margin:0; color:#ffffff; font-size:24px;">
+          if (!emailPattern.test(safeEmail)) {
+            return Response.json(
+              {
+                success: false,
+                message: "Please enter a valid email address.",
+              },
+              { status: 400 },
+            );
+          }
+
+          // Email HTML
+          const emailHtml = `
+            <div style="font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;padding:30px;">
+              
+              <div style="max-width:700px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+                
+                <!-- Header -->
+                <div style="background:#071a3d;padding:28px 30px;">
+                  <h1 style="margin:0;color:#ffffff;font-size:24px;">
                     New Customer Enquiry
                   </h1>
-                  <p style="margin:8px 0 0; color:#b9c7df; font-size:14px;">
+
+                  <p style="margin:8px 0 0;color:#b9c7df;font-size:14px;">
                     MSL Colombo Website
                   </p>
                 </div>
 
+                <!-- Content -->
                 <div style="padding:30px;">
 
-                  <h2 style="margin:0 0 20px; color:#071a3d; font-size:18px;">
+                  <h2 style="margin:0 0 20px;color:#071a3d;font-size:18px;">
                     Customer Details
                   </h2>
 
-                  <table style="width:100%; border-collapse:collapse; font-size:14px;">
+                  <table style="width:100%;border-collapse:collapse;font-size:14px;">
+                    
                     <tr>
-                      <td style="padding:10px 0; font-weight:bold; color:#555; width:150px;">
+                      <td style="padding:10px 0;font-weight:bold;color:#555;width:150px;">
                         Name
                       </td>
-                      <td style="padding:10px 0; color:#222;">
+                      <td style="padding:10px 0;color:#222;">
                         ${escapeHtml(safeName)}
                       </td>
                     </tr>
 
                     <tr>
-                      <td style="padding:10px 0; font-weight:bold; color:#555;">
+                      <td style="padding:10px 0;font-weight:bold;color:#555;">
                         Company
                       </td>
-                      <td style="padding:10px 0; color:#222;">
+                      <td style="padding:10px 0;color:#222;">
                         ${escapeHtml(safeCompany || "Not provided")}
                       </td>
                     </tr>
 
                     <tr>
-                      <td style="padding:10px 0; font-weight:bold; color:#555;">
+                      <td style="padding:10px 0;font-weight:bold;color:#555;">
                         Email
                       </td>
-                      <td style="padding:10px 0; color:#222;">
+                      <td style="padding:10px 0;color:#222;">
                         ${escapeHtml(safeEmail)}
                       </td>
                     </tr>
 
                     <tr>
-                      <td style="padding:10px 0; font-weight:bold; color:#555;">
+                      <td style="padding:10px 0;font-weight:bold;color:#555;">
                         Phone
                       </td>
-                      <td style="padding:10px 0; color:#222;">
+                      <td style="padding:10px 0;color:#222;">
                         ${escapeHtml(safePhone || "Not provided")}
                       </td>
                     </tr>
 
                     <tr>
-                      <td style="padding:10px 0; font-weight:bold; color:#555;">
+                      <td style="padding:10px 0;font-weight:bold;color:#555;">
                         Service Required
                       </td>
-                      <td style="padding:10px 0; color:#222;">
+                      <td style="padding:10px 0;color:#222;">
                         ${escapeHtml(safeService)}
                       </td>
                     </tr>
+
                   </table>
 
+                  <!-- Message -->
                   <div style="margin-top:28px;">
-                    <h3 style="margin:0 0 10px; color:#071a3d; font-size:16px;">
+                    
+                    <h3 style="margin:0 0 10px;color:#071a3d;font-size:16px;">
                       Customer Message
                     </h3>
 
-                    <div style="background:#f7f9fc; border-left:4px solid #2563eb; padding:18px; color:#333; line-height:1.6; white-space:pre-wrap;">
+                    <div style="background:#f7f9fc;border-left:4px solid #2563eb;padding:18px;color:#333;line-height:1.6;white-space:pre-wrap;">
                       ${escapeHtml(safeMessage || "No message provided.")}
                     </div>
+
                   </div>
 
-                  <div style="margin-top:30px; padding-top:20px; border-top:1px solid #e5e7eb; color:#777; font-size:12px;">
+                  <!-- Footer -->
+                  <div style="margin-top:30px;padding-top:20px;border-top:1px solid #e5e7eb;color:#777;font-size:12px;">
                     This enquiry was submitted through the MSL Colombo website.
                   </div>
 
@@ -133,14 +159,17 @@ export const Route = createFileRoute("/api/contact")({
             </div>
           `;
 
+          // Send email through Resend
           const resendResponse = await fetch(
             "https://api.resend.com/emails",
             {
               method: "POST",
+
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${resendApiKey}`,
               },
+
               body: JSON.stringify({
                 from: "MSL Colombo Website <info@mslcolombo.com>",
                 to: ["info@mslcolombo.com"],
@@ -153,22 +182,26 @@ export const Route = createFileRoute("/api/contact")({
 
           const resendData = await resendResponse.json();
 
+          // Resend returned an error
           if (!resendResponse.ok) {
             console.error("Resend error:", resendData);
 
             return Response.json(
               {
                 success: false,
-                message: "Unable to send your enquiry. Please try again.",
+                message:
+                  "Unable to send your enquiry. Please try again.",
               },
               { status: 500 },
             );
           }
 
+          // Success
           return Response.json({
             success: true,
             message: "Your enquiry has been sent successfully.",
           });
+
         } catch (error) {
           console.error("Contact form error:", error);
 
@@ -189,7 +222,7 @@ export const Route = createFileRoute("/api/contact")({
  * Prevent customer-entered HTML from being inserted
  * directly into the email template.
  */
-function escapeHtml(value: string) {
+function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
