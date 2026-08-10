@@ -10,33 +10,135 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutUsRouteImport } from './routes/about-us'
+import { Route as ContactUsRouteImport } from './routes/contact-us'
+import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ServicesIndexRouteImport } from './routes/services.index'
+import { Route as ServicesAirCargoRouteImport } from './routes/services.air-cargo'
+import { Route as ServicesPrintingServicesRouteImport } from './routes/services.printing-services'
+import { Route as ServicesSeaCargoRouteImport } from './routes/services.sea-cargo'
+import { Route as ServicesTransportRouteImport } from './routes/services.transport'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutUsRoute = AboutUsRouteImport.update({
+  id: '/about-us',
+  path: '/about-us',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactUsRoute = ContactUsRouteImport.update({
+  id: '/contact-us',
+  path: '/contact-us',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ServicesRoute,
+} as any)
+const ServicesAirCargoRoute = ServicesAirCargoRouteImport.update({
+  id: '/air-cargo',
+  path: '/air-cargo',
+  getParentRoute: () => ServicesRoute,
+} as any)
+const ServicesPrintingServicesRoute =
+  ServicesPrintingServicesRouteImport.update({
+    id: '/printing-services',
+    path: '/printing-services',
+    getParentRoute: () => ServicesRoute,
+  } as any)
+const ServicesSeaCargoRoute = ServicesSeaCargoRouteImport.update({
+  id: '/sea-cargo',
+  path: '/sea-cargo',
+  getParentRoute: () => ServicesRoute,
+} as any)
+const ServicesTransportRoute = ServicesTransportRouteImport.update({
+  id: '/transport',
+  path: '/transport',
+  getParentRoute: () => ServicesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about-us': typeof AboutUsRoute
+  '/contact-us': typeof ContactUsRoute
+  '/services': typeof ServicesRouteWithChildren
+  '/services/air-cargo': typeof ServicesAirCargoRoute
+  '/services/printing-services': typeof ServicesPrintingServicesRoute
+  '/services/sea-cargo': typeof ServicesSeaCargoRoute
+  '/services/transport': typeof ServicesTransportRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about-us': typeof AboutUsRoute
+  '/contact-us': typeof ContactUsRoute
+  '/services/air-cargo': typeof ServicesAirCargoRoute
+  '/services/printing-services': typeof ServicesPrintingServicesRoute
+  '/services/sea-cargo': typeof ServicesSeaCargoRoute
+  '/services/transport': typeof ServicesTransportRoute
+  '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about-us': typeof AboutUsRoute
+  '/contact-us': typeof ContactUsRoute
+  '/services': typeof ServicesRouteWithChildren
+  '/services/air-cargo': typeof ServicesAirCargoRoute
+  '/services/printing-services': typeof ServicesPrintingServicesRoute
+  '/services/sea-cargo': typeof ServicesSeaCargoRoute
+  '/services/transport': typeof ServicesTransportRoute
+  '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about-us'
+    | '/contact-us'
+    | '/services'
+    | '/services/air-cargo'
+    | '/services/printing-services'
+    | '/services/sea-cargo'
+    | '/services/transport'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about-us'
+    | '/contact-us'
+    | '/services/air-cargo'
+    | '/services/printing-services'
+    | '/services/sea-cargo'
+    | '/services/transport'
+    | '/services'
+  id:
+    | '__root__'
+    | '/'
+    | '/about-us'
+    | '/contact-us'
+    | '/services'
+    | '/services/air-cargo'
+    | '/services/printing-services'
+    | '/services/sea-cargo'
+    | '/services/transport'
+    | '/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutUsRoute: typeof AboutUsRoute
+  ContactUsRoute: typeof ContactUsRoute
+  ServicesRoute: typeof ServicesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +150,91 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about-us': {
+      id: '/about-us'
+      path: '/about-us'
+      fullPath: '/about-us'
+      preLoaderRoute: typeof AboutUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact-us': {
+      id: '/contact-us'
+      path: '/contact-us'
+      fullPath: '/contact-us'
+      preLoaderRoute: typeof ContactUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof ServicesRoute
+    }
+    '/services/air-cargo': {
+      id: '/services/air-cargo'
+      path: '/air-cargo'
+      fullPath: '/services/air-cargo'
+      preLoaderRoute: typeof ServicesAirCargoRouteImport
+      parentRoute: typeof ServicesRoute
+    }
+    '/services/printing-services': {
+      id: '/services/printing-services'
+      path: '/printing-services'
+      fullPath: '/services/printing-services'
+      preLoaderRoute: typeof ServicesPrintingServicesRouteImport
+      parentRoute: typeof ServicesRoute
+    }
+    '/services/sea-cargo': {
+      id: '/services/sea-cargo'
+      path: '/sea-cargo'
+      fullPath: '/services/sea-cargo'
+      preLoaderRoute: typeof ServicesSeaCargoRouteImport
+      parentRoute: typeof ServicesRoute
+    }
+    '/services/transport': {
+      id: '/services/transport'
+      path: '/transport'
+      fullPath: '/services/transport'
+      preLoaderRoute: typeof ServicesTransportRouteImport
+      parentRoute: typeof ServicesRoute
+    }
   }
 }
 
+interface ServicesRouteChildren {
+  ServicesAirCargoRoute: typeof ServicesAirCargoRoute
+  ServicesPrintingServicesRoute: typeof ServicesPrintingServicesRoute
+  ServicesSeaCargoRoute: typeof ServicesSeaCargoRoute
+  ServicesTransportRoute: typeof ServicesTransportRoute
+  ServicesIndexRoute: typeof ServicesIndexRoute
+}
+
+const ServicesRouteChildren: ServicesRouteChildren = {
+  ServicesAirCargoRoute: ServicesAirCargoRoute,
+  ServicesPrintingServicesRoute: ServicesPrintingServicesRoute,
+  ServicesSeaCargoRoute: ServicesSeaCargoRoute,
+  ServicesTransportRoute: ServicesTransportRoute,
+  ServicesIndexRoute: ServicesIndexRoute,
+}
+
+const ServicesRouteWithChildren = ServicesRoute._addFileChildren(
+  ServicesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutUsRoute: AboutUsRoute,
+  ContactUsRoute: ContactUsRoute,
+  ServicesRoute: ServicesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
