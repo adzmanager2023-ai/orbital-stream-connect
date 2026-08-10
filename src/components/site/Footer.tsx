@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer>
+    <footer className="bg-[color:var(--navy-deep)] text-on-navy">
       <div className="relative mx-auto max-w-[1400px] px-5 pb-10 pt-20 md:px-8 md:pt-28">
         <div className="grid gap-14 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
 
@@ -127,7 +127,6 @@ export function Footer() {
 
         {/* Bottom Footer */}
         <div className="mt-16 flex flex-col gap-3 border-t border-[color:var(--hairline-navy)] pt-6 text-xs text-on-navy-muted sm:flex-row sm:items-center sm:justify-between">
-
           <p>
             © {new Date().getFullYear()} MSL Colombo. All Rights Reserved.
           </p>
@@ -135,7 +134,6 @@ export function Footer() {
           <p className="eyebrow">
             Connected Business Solutions
           </p>
-
         </div>
       </div>
     </footer>
