@@ -28,7 +28,7 @@ export const Route = createFileRoute("/api/contact")({
           }
 
           // Get Resend API key from Wasmer Environment Variables
-          const resendApiKey = process.env.RESEND_API_KEY;
+          const resendApiKey = process.env['RESEND_API_KEY'];
 
           if (!resendApiKey) {
             console.error("RESEND_API_KEY is not configured.");
