@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutUsRouteImport } from './routes/about-us'
 import { Route as ContactUsRouteImport } from './routes/contact-us'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ApiContactRouteImport } from './routes/api/contact'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ServicesAirCargoRouteImport } from './routes/services.air-cargo'
 import { Route as ServicesPrintingServicesRouteImport } from './routes/services.printing-services'
@@ -37,6 +38,11 @@ const ContactUsRoute = ContactUsRouteImport.update({
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContactRoute = ApiContactRouteImport.update({
+  id: '/api/contact',
+  path: '/api/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesIndexRoute = ServicesIndexRouteImport.update({
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/about-us': typeof AboutUsRoute
   '/contact-us': typeof ContactUsRoute
   '/services': typeof ServicesRouteWithChildren
+  '/api/contact': typeof ApiContactRoute
   '/services/air-cargo': typeof ServicesAirCargoRoute
   '/services/printing-services': typeof ServicesPrintingServicesRoute
   '/services/sea-cargo': typeof ServicesSeaCargoRoute
@@ -81,6 +88,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about-us': typeof AboutUsRoute
   '/contact-us': typeof ContactUsRoute
+  '/api/contact': typeof ApiContactRoute
   '/services/air-cargo': typeof ServicesAirCargoRoute
   '/services/printing-services': typeof ServicesPrintingServicesRoute
   '/services/sea-cargo': typeof ServicesSeaCargoRoute
@@ -93,6 +101,7 @@ export interface FileRoutesById {
   '/about-us': typeof AboutUsRoute
   '/contact-us': typeof ContactUsRoute
   '/services': typeof ServicesRouteWithChildren
+  '/api/contact': typeof ApiContactRoute
   '/services/air-cargo': typeof ServicesAirCargoRoute
   '/services/printing-services': typeof ServicesPrintingServicesRoute
   '/services/sea-cargo': typeof ServicesSeaCargoRoute
@@ -106,6 +115,7 @@ export interface FileRouteTypes {
     | '/about-us'
     | '/contact-us'
     | '/services'
+    | '/api/contact'
     | '/services/air-cargo'
     | '/services/printing-services'
     | '/services/sea-cargo'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about-us'
     | '/contact-us'
+    | '/api/contact'
     | '/services/air-cargo'
     | '/services/printing-services'
     | '/services/sea-cargo'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/about-us'
     | '/contact-us'
     | '/services'
+    | '/api/contact'
     | '/services/air-cargo'
     | '/services/printing-services'
     | '/services/sea-cargo'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   AboutUsRoute: typeof AboutUsRoute
   ContactUsRoute: typeof ContactUsRoute
   ServicesRoute: typeof ServicesRouteWithChildren
+  ApiContactRoute: typeof ApiContactRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -169,6 +182,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/contact': {
+      id: '/api/contact'
+      path: '/api/contact'
+      fullPath: '/api/contact'
+      preLoaderRoute: typeof ApiContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services/': {
@@ -234,7 +254,18 @@ const rootRouteChildren: RootRouteChildren = {
   AboutUsRoute: AboutUsRoute,
   ContactUsRoute: ContactUsRoute,
   ServicesRoute: ServicesRouteWithChildren,
+  ApiContactRoute: ApiContactRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
