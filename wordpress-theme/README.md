@@ -44,3 +44,16 @@ Optionally add `screenshot.png` (1200×900) to the theme root for the admin prev
 - Fonts (Space Grotesk + Inter) load from Google Fonts via `wp_enqueue_style`.
 - No page builder, Bootstrap, or build step required — plain PHP, CSS and vanilla JS.
 - Contact forms: use a plugin (e.g. WPForms/Contact Form 7) and place the shortcode on the contact page.
+
+## Starter content
+
+On first activation the theme automatically creates:
+
+- Pages: Home (set as the static front page), Services, About Us, Contact Us, Request a Quote
+- Service detail pages nested under Services: Sea Freight, Air Freight, Transport & Distribution, Printing Services
+- A "Primary" navigation menu assigned to the header, with the service pages nested under Services
+- The header "Request a Quote" button pointed at the Quote page
+
+All content is demo copy — edit it under **Pages**. Starter content runs only once
+(tracked by the `msl_starter_content_installed` option) and never overwrites existing
+pages or menus.
