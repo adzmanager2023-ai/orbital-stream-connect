@@ -157,3 +157,4 @@ add_filter( 'excerpt_more', function () { return '&hellip;'; } );
 add_filter( 'excerpt_length', function () { return 26; }, 999 );
 
 require_once get_template_directory() . '/inc/customizer.php';
+require_once get_template_directory() . '/inc/starter-content.php';
